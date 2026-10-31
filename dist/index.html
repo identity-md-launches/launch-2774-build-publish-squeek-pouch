@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Squeek Pouch - a hamster arcade game on live Squeekchain data</title>
+    <meta name="description" content="Catch seeds, dodge pebbles and bank your pouch. The real hamster Squeektoshi's wheel boosts your deposits, and every real Squeek block brings a golden storm. Points only - no wallet, no tokens." />
+    <meta name="theme-color" content="#1b1430" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Squeek Pouch" />
+    <meta property="og:description" content="A cozy hamster arcade game driven by Squeekchain's live wheel. Points only - no wallet, no tokens." />
+    <meta property="og:image" content="./og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="module" crossorigin src="./assets/index-D2GWrc9d.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DG_3ZEG4.css">
+  </head>
+  <body>
+    <div class="app">
+      <section class="status" aria-label="Live Squeekchain status">
+        <div class="status-line">
+          <span class="dot" id="st-dot" data-state="connecting" aria-hidden="true"></span>
+          <strong id="st-state">Connecting to the wheel</strong>
+          <span class="num" id="st-rpm">0 rpm</span>
+        </div>
+        <div class="status-line">
+          <span class="nowrap">Block <span class="num strong" id="st-height">#…</span></span>
+          <div class="bar" id="st-bar" role="progressbar" aria-label="Next Squeek block mined" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span id="st-bar-fill"></span>
+          </div>
+          <span class="num" id="st-pct">0%</span>
+          <span class="nowrap">Boost <span class="num strong" id="st-boost">x1.0</span></span>
+        </div>
+        <p class="source" id="st-source">Fetching api.squeekchain.com</p>
+      </section>
+
+      <main class="game">
+        <div class="hud" aria-label="Round">
+          <div><span class="hud-label">Banked</span> <span class="num hud-value" id="hud-score">0</span></div>
+          <div><span class="hud-label">Pouch</span> <span class="num hud-value" id="hud-pouch">0/15</span></div>
+          <div><span class="hud-label">Lives</span> <span class="hud-value lives" id="hud-lives" role="img" aria-label="3 lives"></span></div>
+          <div><span class="hud-label">Time</span> <span class="num hud-value" id="hud-time">90</span></div>
+        </div>
+
+        <div class="stage" id="stage">
+          <canvas id="game" role="img" aria-label="Game field: a hamster catches falling seeds in front of a big wheel."></canvas>
+
+          <section class="overlay" id="title-screen" aria-labelledby="title-h">
+            <div class="card">
+              <h1 id="title-h">Squeek Pouch</h1>
+              <p>Catch seeds: sunflower +1, golden SQK +5. A full pouch (15) makes you slow.</p>
+              <p>Pebbles cost a life and spill the pouch. Bank at the left burrow; only banked seeds count.</p>
+              <p>Squeektoshi's real wheel boosts deposits up to x3. A real Squeek block brings a golden storm.</p>
+              <p class="points">Points only - no wallet, no tokens</p>
+              <button class="btn primary" id="play" type="button">Play</button>
+              <p class="best" id="best-title" hidden></p>
+            </div>
+          </section>
+
+          <section class="overlay" id="over-screen" aria-labelledby="over-h" hidden>
+            <div class="card">
+              <h2 id="over-h">Round over</h2>
+              <p id="over-reason">Time's up!</p>
+              <p class="final"><span class="num" id="over-score">0</span> seeds banked</p>
+              <p class="best" id="over-best"></p>
+              <button class="btn primary" id="again" type="button">Play again</button>
+            </div>
+          </section>
+        </div>
+
+        <div class="controls">
+          <p class="hint">Drag or ← → to move</p>
+          <button class="btn burrow" id="burrow" type="button" aria-keyshortcuts="Space" disabled>
+            Burrow <span class="key">Space</span>
+          </button>
+        </div>
+        <p class="sr-only" id="announcer" aria-live="polite"></p>
+      </main>
+
+      <footer class="footer">
+        Built for Squeekchain - live data from api.squeekchain.com.
+        <a href="https://squeekchain.com" rel="noopener">Visit squeekchain.com</a>
+      </footer>
+    </div>
+  </body>
+</html>

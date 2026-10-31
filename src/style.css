@@ -1,0 +1,432 @@
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 1000;
+  src: url('./assets/fonts/nunito-latin-wght-normal.woff2') format('woff2-variations');
+}
+
+:root {
+  /* Color roles */
+  --bg: #1b1430;
+  --surface: #261c44;
+  --surface-2: #34275c;
+  --accent: #ffb43b;
+  --accent-press: #f29e17;
+  --on-accent: #1b1430;
+  --text: #fff3dc;
+  --text-muted: #d2c6e6;
+  --run: #7fe08e;
+  --rest: #9d93c2;
+  --stale: #ffcf70;
+  --fault: #ff8a7a;
+  --focus: #fff3dc;
+
+  /* Type scale (5 sizes) */
+  --fs-sm: 0.8125rem; /* 13px: source line, labels, footer */
+  --fs-base: 0.9375rem; /* 15px: body, status */
+  --fs-md: 1.125rem; /* 18px: HUD values, buttons */
+  --fs-lg: 1.5rem; /* 24px: round-over heading, final score */
+  --fs-xl: 2.125rem; /* 34px: title */
+
+  /* Spacing (4px base) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+
+  --radius: 16px;
+  --radius-lg: 22px;
+  --font: 'Nunito', ui-rounded, 'SF Pro Rounded', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.playing {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 100%;
+  max-width: 760px;
+  height: 100dvh;
+  min-height: 520px;
+  margin: 0 auto;
+  padding: max(var(--sp-2), env(safe-area-inset-top)) max(var(--sp-3), env(safe-area-inset-right))
+    max(var(--sp-2), env(safe-area-inset-bottom)) max(var(--sp-3), env(safe-area-inset-left));
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+.strong {
+  font-weight: 800;
+}
+.nowrap {
+  white-space: nowrap;
+}
+
+/* Status panel */
+.status {
+  flex: none;
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface);
+  border-radius: var(--radius);
+}
+.status-line {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.status-line strong {
+  font-weight: 800;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.dot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--rest);
+}
+.dot[data-state='running'] {
+  background: var(--run);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+.dot[data-state='stale'] {
+  background: var(--stale);
+}
+.dot[data-state='fault'] {
+  background: var(--fault);
+}
+.dot[data-state='simulated'] {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--stale);
+}
+@keyframes pulse {
+  50% {
+    transform: scale(1.35);
+    opacity: 0.7;
+  }
+}
+.bar {
+  flex: 1 1 60px;
+  height: 10px;
+  min-width: 40px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.bar span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  border-radius: inherit;
+  transition: width 0.6s ease-out;
+}
+.source {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+.source[data-sim='true'] {
+  color: var(--stale);
+  font-weight: 800;
+}
+
+/* Game column */
+.game {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.hud {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-1);
+}
+.hud > div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.hud-label {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+.hud-value {
+  font-size: var(--fs-md);
+  font-weight: 800;
+}
+.lives {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  min-height: 1.2em;
+}
+.lives svg {
+  width: 18px;
+  height: 18px;
+}
+
+.stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 240px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg);
+}
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-3);
+  overflow-y: auto;
+  background: rgba(27, 20, 48, 0.55);
+}
+.overlay[hidden] {
+  display: none;
+}
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--sp-4) var(--sp-4) var(--sp-4);
+  background: rgba(27, 20, 48, 0.92);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+.card h1,
+.card h2 {
+  margin: 0 0 var(--sp-2);
+  line-height: 1.1;
+  font-weight: 800;
+  text-wrap: balance;
+}
+.card h1 {
+  font-size: var(--fs-xl);
+  color: var(--accent);
+}
+.card h2 {
+  font-size: var(--fs-lg);
+  color: var(--accent);
+}
+.card p {
+  margin: 0 0 var(--sp-2);
+  text-wrap: pretty;
+}
+.card .points {
+  margin-top: var(--sp-3);
+  font-weight: 800;
+  color: var(--accent);
+}
+.card .final {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+}
+.card .best {
+  margin: var(--sp-3) 0 0;
+  color: var(--text-muted);
+}
+
+/* Buttons */
+.btn {
+  appearance: none;
+  border: 0;
+  font: inherit;
+  font-size: var(--fs-md);
+  font-weight: 800;
+  min-height: 52px;
+  padding: 0 var(--sp-5);
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    transform 0.12s ease-out,
+    background-color 0.15s ease-out;
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.btn:focus-visible,
+.footer a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+.btn.primary {
+  margin-top: var(--sp-2);
+  min-width: 180px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.btn.primary:hover {
+  background: var(--accent-press);
+}
+
+.controls {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.hint {
+  margin: 0;
+  color: var(--text-muted);
+}
+.btn.burrow {
+  flex: 0 1 200px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  background: var(--surface-2);
+  color: var(--text);
+}
+.btn.burrow:not(:disabled):hover {
+  background: #403070;
+}
+.btn.burrow:disabled {
+  cursor: default;
+  color: var(--text-muted);
+}
+.key {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  padding: 1px var(--sp-2);
+  border-radius: 6px;
+  background: rgba(255, 243, 220, 0.12);
+}
+
+.footer {
+  flex: none;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  text-align: center;
+}
+.footer a {
+  color: var(--accent);
+  font-weight: 700;
+  text-underline-offset: 2px;
+  display: inline-block;
+  padding: var(--sp-2) var(--sp-1);
+  margin: calc(var(--sp-1) * -1) 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 720px) {
+  .app {
+    gap: var(--sp-3);
+    padding-top: var(--sp-4);
+    padding-bottom: var(--sp-3);
+  }
+  .status {
+    grid-template-columns: auto 1fr;
+    column-gap: var(--sp-5);
+    padding: var(--sp-3) var(--sp-4);
+  }
+  .source {
+    grid-column: 1 / -1;
+  }
+  .hud {
+    padding: 0 var(--sp-2);
+  }
+}
+
+/* Short screens (iPhone SE and landscape): keep Play visible without scrolling the card. */
+@media (max-height: 740px) {
+  .card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--sp-3);
+  }
+  .card h1 {
+    font-size: var(--fs-lg);
+  }
+  .card p {
+    font-size: var(--fs-sm);
+    line-height: 1.35;
+    margin-bottom: var(--sp-1);
+  }
+  .card .btn.primary {
+    order: -1;
+    margin: 0 0 var(--sp-2);
+    min-height: 48px;
+  }
+  .card h1,
+  .card h2 {
+    order: -2;
+  }
+  .card .points {
+    margin-top: var(--sp-1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot[data-state='running'] {
+    animation: none;
+  }
+  .bar span,
+  .btn {
+    transition: none;
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "squeek-pouch",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Squeek Pouch - a hamster arcade game driven by Squeekchain's live wheel data.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:browser": "node tests/browser/smoke.mjs"
+  },
+  "devDependencies": {
+    "@fontsource-variable/nunito": "^5.3.0",
+    "playwright": "^1.64.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}
